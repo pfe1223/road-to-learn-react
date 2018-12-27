@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
 
+const DEFAULT_QUERY = 'redux'
+
+const PATH_BASE = 'https://hn.algolia.com/api/v1'
+const PATH_SEARCH = '/search'
+const PARAM_SEARCH = 'query='
+
 const list = [
 	{
 		title: 'React',
@@ -30,13 +36,27 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			list: list,
-			searchTerm: ''
+			result: null,
+			searchTerm: DEFAULT_QUERY
 		}
 		
+		this.setSearchTopStories = this.setSearchTopStories.bind(this)
 		this.onDismiss = this.onDismiss.bind(this);
 		this.onSearchChange = this.onSearchChange.bind(this);
 	};
+	
+	setSearchTopStories(result) {
+		this.setState({result})
+	}
+	
+	componentDidMount() {
+		const {searchTerm} = this.state
+		
+		fetch(`${PATH_BASE}$PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+			.then(response => response.json())
+			.then(result => setSearchTopStories(result))
+			.catch(error => error)
+	}
 	
 	onDismiss(id) {
 		const isNotId = item => item.objectID !== id;
